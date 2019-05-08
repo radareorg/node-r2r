@@ -134,7 +134,7 @@ function main (argv) {
 
       // Skip archos dependent tests that are not for this platform
       if (testFile.indexOf('archos') !== -1) {
-        let dir = path.dirname(testFile).split(path.sep)
+        let dir = path.dirname(testFile).split(path.sep);
         dir = dir[dir.length - 1].split('-');
 
         if (os.platform() !== dir[0]) {
@@ -146,7 +146,6 @@ function main (argv) {
           console.error('Skipping ' + testFile + ' because arch differs.');
           return next();
         }
-
       }
 
       nr.load(testFile, (err, data) => {
@@ -273,7 +272,7 @@ function main (argv) {
       }
       nr.quit().then(_ => {
         if (argv.u) {
-          unmarkAsBroken (nr.fixed);
+          unmarkAsBroken(nr.fixed);
         }
         if (nr.queue.length > 0 && (argv.interactive || argv.i)) {
           console.error(nr.queue.length, 'failed tests');
@@ -326,37 +325,37 @@ function unmarkAsBroken (tests) {
       let is_json = filePath.includes('db/json');
       let is_asm = filePath.includes('db/asm');
       for (let i = 0; i < lines.length; i++) {
-         if (is_json) {
-           let name = test.name.trim();
-           if (lines[i].split('BROKEN')[0].trim().localeCompare(name) === 0) {
-             if (json_dict[name]) {
-               json_dict[name] += 1;
-             } else {
-               json_dict[name] = 1;
-             }
-             if (json_dict[name] >= 4) { // Hack
-               console.log('Fixing json test ' + name);
-               lines[i] = lines[i].split('BROKEN')[0].trim();
-             }
-           }
-         } else if (is_asm) {
-           // TODO
-         } else {
-           if (lines[i].includes('NAME=')) {
-             let name = lines[i].substring(lines[i].lastIndexOf('NAME=') + 5).trim();
-             if (name.localeCompare(test.name.trim()) === 0) {
-               console.log('Fixing test ' + name);
-               let j = i + 1;
-               while (lines[j] && !lines[j].startsWith('NAME=')) {
-                 if (lines[j].startsWith('BROKEN')) {
-                   lines.splice(j, 1);
-                 }
-                 j++;
-               }
-             }
-           }
-         }
-         output += lines[i] + '\n';
+        if (is_json) {
+          let name = test.name.trim();
+          if (lines[i].split('BROKEN')[0].trim().localeCompare(name) === 0) {
+            if (json_dict[name]) {
+              json_dict[name] += 1;
+            } else {
+              json_dict[name] = 1;
+            }
+            if (json_dict[name] >= 4) { // Hack
+              console.log('Fixing json test ' + name);
+              lines[i] = lines[i].split('BROKEN')[0].trim();
+            }
+          }
+        } else if (is_asm) {
+          // TODO
+        } else {
+          if (lines[i].includes('NAME=')) {
+            let name = lines[i].substring(lines[i].lastIndexOf('NAME=') + 5).trim();
+            if (name.localeCompare(test.name.trim()) === 0) {
+              console.log('Fixing test ' + name);
+              let j = i + 1;
+              while (lines[j] && !lines[j].startsWith('NAME=')) {
+                if (lines[j].startsWith('BROKEN')) {
+                  lines.splice(j, 1);
+                }
+                j++;
+              }
+            }
+          }
+        }
+        output += lines[i] + '\n';
       }
       fs.writeFileSync(filePath, output);
     } catch (err) {

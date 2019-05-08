@@ -6,12 +6,12 @@ const fs = require('fs');
 const travisUrl = 'https://api.travis-ci.org';
 const travisPath = 'radare/radare2';
 
-async function travis(api, root, cb) {
+async function travis (api, root, cb) {
   return new Promise((resolve, reject) => {
     const url = root
-    ? [travisUrl, 'repos', travisPath, api].join('/')
-    : [travisUrl, api].join('/');
-    get.concat(url, (err, res, data) => { 
+      ? [travisUrl, 'repos', travisPath, api].join('/')
+      : [travisUrl, api].join('/');
+    get.concat(url, (err, res, data) => {
       if (err) {
         return reject(err);
       }
@@ -25,7 +25,7 @@ async function travis(api, root, cb) {
   });
 }
 
-function parseLogs(log) {
+function parseLogs (log) {
   const obj = {
     txt: '',
     fx: 0,
@@ -65,7 +65,7 @@ function parseLogs(log) {
   return obj;
 }
 
-async function processJob(job) {
+async function processJob (job) {
   console.log(colors.green(`[BUILD] ${job.id} (${job.state}) ${job.message}`));
   console.log(colors.yellow(`[-----] ${job.id} ${job.started_at} ${job.commit}`));
   const buildInfo = await travis('builds/' + job.id, false);
@@ -75,12 +75,12 @@ async function processJob(job) {
     const travisLog = logExists
       ? { log: fs.readFileSync(logFile).toString() }
       : await travis(`jobs/${job.id}`, false);
-    const log = (travisLog && travisLog.log)? travisLog.log.replace(/\r/g, '\n'): '';
+    const log = (travisLog && travisLog.log) ? travisLog.log.replace(/\r/g, '\n') : '';
     const result = parseLogs(log);
     if (!logExists) {
       fs.writeFileSync(logFile, log);
     }
-    const status = job.finished_at === null? '(running)': '(finished)';
+    const status = job.finished_at === null ? '(running)' : '(finished)';
     console.log('  [JOB]', job.id, 'XX:', result.xx, 'BR:', result.br, 'FX:', result.fx, status);
     for (let issue of result.issues) {
       console.log('  ', issue);
@@ -88,7 +88,7 @@ async function processJob(job) {
   }
 }
 
-async function main(limit) {
+async function main (limit) {
   try {
     const builds = await travis('builds', true);
     let lastBuild;
@@ -99,11 +99,11 @@ async function main(limit) {
       }
     }
   } catch (err) {
-    console.error('Oops' , err);
+    console.error('Oops', err);
   }
 }
 
-function run(p) {
+function run (p) {
   p.then(process.exit).catch(console.error);
 }
 

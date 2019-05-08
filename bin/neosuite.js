@@ -9,7 +9,7 @@ const util = require('../lib/util');
 console.error('[NEOSUITE] r2r.js refactored from the ground');
 const dbDir = 'db/cmd';
 
-async function main(argv) {
+async function main (argv) {
   const options = getopt(argv);
   const ns = new NeoSuite();
   try {
@@ -41,7 +41,7 @@ async function main(argv) {
       }
     } else if (options.totext) {
       if (options.inplace) {
-        console.error("TODO")
+        console.error('TODO');
       } else {
         tests.map(test => console.log(testToText(test)));
       }
@@ -64,7 +64,7 @@ const args = {
   boolean: [ 'c', 'i', 'h', 't', 'r', 'a', 'b' ]
 };
 
-function getopt(argv) {
+function getopt (argv) {
   const opt = minimist(argv.slice(2), args);
   if (opt.h) {
     console.log('Usage: neosuite [-options]');
@@ -102,7 +102,7 @@ function getopt(argv) {
 
 main(process.argv).then(process.exit).catch(console.error);
 
-function testToText(test) {
+function testToText (test) {
   // this check should be here
   if (!(test.name && test.cmds)) {
     throw new Error('Invalid test: ' + JSON.stringify(test));

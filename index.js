@@ -213,7 +213,7 @@ class NewRegressions {
             args.push('-c', test.cmds.join(';'));
           }
           if (!test.file) {
-            test.file='-';
+            test.file = '-';
           }
           // Append testfile
           args.push(...test.file.split(' '));
@@ -243,7 +243,7 @@ class NewRegressions {
             childEnv = process.env;
           }
 
-          const child = spawn(r2bin, args, {shell: test.oneStream ? true : false, env: childEnv});
+          const child = spawn(r2bin, args, {shell: !!test.oneStream, env: childEnv});
           test.birth = new Date();
           child.stdout.on('data', data => {
             res += data.toString();
@@ -394,7 +394,7 @@ class NewRegressions {
           }
           test.cmds = test.cmdScript ? test.cmdScript.trim().split('\n') : [];
           break;
-/*
+          /*
         case 'CMDS64':
           test.cmdScript = debase64(v);
           test.cmds = test.cmdScript ? test.cmdScript.trim().split('\n') : [];
@@ -448,7 +448,7 @@ class NewRegressions {
             }
           }
           break;
-/*
+          /*
         case 'EXPECT64':
           test.expect = debase64(v);
           test.expect64 = true;
@@ -492,7 +492,7 @@ class NewRegressions {
             }
           }
           break;
-/*
+          /*
         case 'EXPECT_ERR64':
           test.expect = debase64(v);
           break;
@@ -859,7 +859,7 @@ function parseTestJson (source, line) {
     t.cmd = line;
     t.broken = false;
   }
-  t.check = function(test) {
+  t.check = function (test) {
     try {
       if (test.stdout === '') {
         test.passes = true;
@@ -878,10 +878,8 @@ function parseTestJson (source, line) {
         console.error(test.stdout);
         console.error(err);
       }
-      
-      
     }
-  }
+  };
 
   let tests = [];
 
