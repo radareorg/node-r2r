@@ -533,7 +533,8 @@ class NewRegressions {
 
   load (fileName, cb) {
     this.name = fileName;
-    const pathName = path.join(__dirname, fileName);
+    const rootPath = path.join(process.cwd());
+    const pathName = path.join(rootPath, fileName);
     const blob = fs.readFileSync(pathName);
     // do we really need to support gzipped tests?
     zlib.gunzip(blob, (err, data) => {
