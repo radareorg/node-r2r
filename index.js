@@ -905,6 +905,7 @@ function parseTestAsm (source, line) {
     console.error(colors.red.bold('[XX]', 'Wrong asm filename: ' + source));
     return [];
   } else if (filename.length === 2) {
+    r2args.push('e asm.cpu=');
     r2args.push('e asm.bits=' + filename[1]);
   } else if (filename.length === 3) {
     r2args.push('e asm.cpu=' + filename[1]);
