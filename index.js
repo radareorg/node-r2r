@@ -547,9 +547,10 @@ class NewRegressions {
       if (process.platform === 'win32') {
         tests = tests.replace(/\/dev\/null/g, 'nul').replace(/\r\n/g, '\n').split('\n');
         for (let i = 0; i < tests.length; i++) {
-          if (tests[i].startsWith('!') || tests[i].startsWith('CMDS=!')) {
+          if (!tests[i].slice(0, 1).localeCompare('!') || !tests[i].slice(0, 6).localeCompare('CMDS=!')) {
             tests[i] = tests[i].replace(/\${(\S+?)}/g, '%$1%')
-              .replace(/awk "{print \\\$1}"/g, "sed 's/^[ \\t]*//;s/[ \\t]*$//'");
+              .replace(/awk "{print \\\$1}"/g, "sed 's/^[ \\t]*//;s/[ \\t]*$//'")
+              .replace(/(\\\$)/g, "\$");
           }
         }
       } else {
