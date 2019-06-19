@@ -549,7 +549,6 @@ class NewRegressions {
         for (let i = 0; i < tests.length; i++) {
           if (!tests[i].slice(0, 1).localeCompare('!') || !tests[i].slice(0, 6).localeCompare('CMDS=!')) {
             tests[i] = tests[i].replace(/\${(\S+?)}/g, '%$1%')
-              .replace(/awk "{print \\\$1}"/g, "sed 's/^[ \\t]*//;s/[ \\t]*$//'")
               .replace(/(\\\$)/g, "\$");
           }
         }
