@@ -867,6 +867,10 @@ function parseTestJson (source, line) {
       if (test.stdout === '') {
         test.passes = true;
       } else {
+        while (test.stdout.charCodeAt(test.stdout.length - 1) == 0) {
+          // JSON doesn't like C-like strings, remove trailing 0
+          test.stdout = test.stdout.slice(0, test.stdout.length - 1);
+        }
         JSON.parse(test.stdout);
         test.passes = true;
       }
