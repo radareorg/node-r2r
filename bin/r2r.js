@@ -178,7 +178,7 @@ function main (argv) {
         if (err) {
           console.error(err);
         }
-        const code = process.env.APPVEYOR ? 0 : nr.report.failed > 0;
+        const code = nr.report.failed > 0;
         process.exit(code);
       }
       function pullQueue (cb) {
