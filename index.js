@@ -941,7 +941,7 @@ function parseTestAsm (source, line) {
         tests.push(t);
         break;
       case 'a':
-        t.cmd = 'e cfg.bigendian=' + t.endianess + ';' + 'pa ' + asm;
+        t.cmd = 'e cfg.bigendian=' + t.endianess + ';' + '"pa ' + asm + '"';
         t.expect = expect;
         t.name = filename + ': "' + asm + '" => ' + expect + colors.blue(' (assemble)');
         tests.push(t);
