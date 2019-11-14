@@ -71,7 +71,8 @@ function main (argv) {
 
   const nr = new NewRegressions(argv, function ready (err, res) {
     if (err) {
-      return 1;
+      console.error(err);
+      process.exit(1);
     }
     if (argv.g) {
       console.error('TODO: grep');
