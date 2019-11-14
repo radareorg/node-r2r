@@ -1,6 +1,6 @@
 {
   "name": "node-r2r",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "radare2 regressions testsuite in nodejs",
   "main": "index.js",
   "bin": {
@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "co": "*",
-    "colors": "^1.2.5",
+    "colors": "^1.4.0",
     "diff": "^4.0.0",
     "minimist": "^1.2.0",
-    "njstrace": "^1.1.2",
+    "njstrace": "^1.2.0",
     "promise-limit": "^2.6.0",
     "r2pipe-promise": "1.5.1",
     "rc": "^1.2.8",
@@ -22,7 +22,7 @@
     "walk": "^2.3.13"
   },
   "devDependencies": {
-    "semistandard": "^13.0.1"
+    "semistandard": "^14.2.0"
   },
   "scripts": {
     "test": "semistandard",
