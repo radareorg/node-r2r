@@ -18,8 +18,10 @@ const promiseLimit = require('promise-limit');
 
 const limit = promiseLimit(promiseConcurrency);
 
-if (process.env.TRAVIS || process.env.APPVEYOR) {
+if (process.env.NOOK !== "0" && (process.env.TRAVIS || process.env.APPVEYOR)) {
   process.env.NOOK = 1;
+} else if (process.env.NOOK === "0") {
+  delete process.env.NOOK;
 }
 
 function newPromise (cb) {
