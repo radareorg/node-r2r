@@ -220,6 +220,7 @@ class NewRegressions {
           // Append testfile
           args.push(...test.file.split(' '));
           if (test.oneStream) {
+            args.unshift('-escr.onestream=1');
             args.push('2>&1');
           }
 
@@ -503,7 +504,7 @@ class NewRegressions {
           test.file = v;
           break;
         case 'ONE_STREAM':
-          test.oneStream = v === 'true';
+          test.oneStream = true;
           break;
         default:
           if (test.customEnv === undefined) {
