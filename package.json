@@ -1,6 +1,6 @@
 {
   "name": "node-r2r",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "radare2 regressions testsuite in nodejs",
   "main": "index.js",
   "bin": {
