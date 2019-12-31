@@ -117,7 +117,7 @@ class NewRegressions {
         co(function * () {
           try {
             if (test.args) {
-              self.r2.cmd(test.args);
+              yield self.r2.cmd(test.args);
             }
             test.stdout = yield self.r2.cmd(test.cmd);
             return resolve(cb(test));
@@ -135,21 +135,21 @@ class NewRegressions {
   runTestJson (test, cb) {
     const self = this;
     return newPromise((resolve, reject) => {
-      try {
-        co(function * () {
-          try {
-            if (test.path) {
-              self.r2.cmd('o ' + test.path, '; o-!; aaa');
-            }
-            test.stdout = yield self.r2.cmd(test.cmd);
-            return resolve(cb(test));
-          } catch (e) {
-            return reject(e);
-          }
-        });
-      } catch (e) {
-        console.error(e);
-        reject(e);
+      if (test.path) {
+        self.r2.cmd('o ' + test.path + '; o-!; aaa')
+        .then((_) => {
+          self.r2.cmd(test.cmd)
+          .then((res) => {
+            test.stdout = res;
+            resolve(cb(test));
+          }).catch(reject);
+        }).catch(reject);
+      } else {
+        self.r2.cmd(test.cmd)
+        .then((res) => {
+          test.stdout = res;
+          resolve(cb(test));
+        }).catch(reject);
       }
     });
   }
