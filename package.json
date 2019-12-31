@@ -1,14 +1,35 @@
 {
-  "name": "node-r2r",
-  "version": "0.2.6",
-  "description": "radare2 regressions testsuite in nodejs",
-  "main": "index.js",
+  "_from": "node-r2r@^0.2.6",
+  "_id": "node-r2r@0.2.6",
+  "_inBundle": false,
+  "_integrity": "sha512-vs/m8H9yoJkJzMZx4dX6A4wzA7ZUTqE2EVtHrJie0wUV+Mhr2IguYwAbocK/KQLljTJgY6ZNTx34euVTgFmRGg==",
+  "_location": "/node-r2r",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "node-r2r@^0.2.6",
+    "name": "node-r2r",
+    "escapedName": "node-r2r",
+    "rawSpec": "^0.2.6",
+    "saveSpec": null,
+    "fetchSpec": "^0.2.6"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/node-r2r/-/node-r2r-0.2.6.tgz",
+  "_shasum": "c7a5fac8d9da9dcaf40c9ec2f5b84dada377b074",
+  "_spec": "node-r2r@^0.2.6",
+  "_where": "/Users/pancake/prg/radare2/test/new",
+  "author": {
+    "name": "pancake",
+    "email": "pancake@nopcode.org"
+  },
   "bin": {
     "r2r": "bin/r2r.js"
   },
-  "engines": {
-    "node": ">=8.x"
-  },
+  "bundleDependencies": false,
   "dependencies": {
     "co": "*",
     "colors": "^1.4.0",
@@ -21,13 +42,20 @@
     "tmp": "*",
     "walk": "^2.3.13"
   },
+  "deprecated": false,
+  "description": "radare2 regressions testsuite in nodejs",
   "devDependencies": {
     "semistandard": "^14.2.0"
   },
-  "scripts": {
-    "test": "semistandard",
-    "fix": "semistandard --fix"
+  "engines": {
+    "node": ">=8.x"
   },
-  "author": "pancake <pancake@nopcode.org>",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "index.js",
+  "name": "node-r2r",
+  "scripts": {
+    "fix": "semistandard --fix",
+    "test": "semistandard"
+  },
+  "version": "0.2.7"
 }
