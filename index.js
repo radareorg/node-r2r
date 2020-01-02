@@ -117,7 +117,8 @@ class NewRegressions {
         co(function * () {
           try {
             if (test.args) {
-              yield self.r2.cmd(test.args);
+              // yield breaks some tests. wtf
+              self.r2.cmd(test.args);
             }
             test.stdout = yield self.r2.cmd(test.cmd);
             return resolve(cb(test));
@@ -922,6 +923,7 @@ function parseTestAsm (source, line) {
   let type = args[0];
   let asm = args[1].split('"').join('');
   let expect = args[2];
+
   if (args.length >= 4) {
     r2args.push('s ' + args[3]);
   } else {
