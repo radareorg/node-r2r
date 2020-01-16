@@ -42,7 +42,7 @@ const args = process.argv.slice(2).map(_ => {
 const delims = /['"%]/;
 
 main(minimist(args, {
-  boolean: ['v', 'verbose', 'i', 'interactive', 'l', 'list', 'debase64', 'format'],
+  boolean: ['v', 'verbose', 'i', 'interactive', 'l', 'list', 'debase64', 'format', 'to-eof'],
   string: ['g', 'grep']
 }));
 
@@ -64,7 +64,9 @@ function main (argv) {
  --debase64
        debase64 tests
  --format
-       format tests (i.e. add blank lines between tests)`);
+       format tests (i.e. add blank lines between tests)
+ --to-eof
+       convert >>KEYWORD to >>EOF`);
     rl.close();
     return 0;
   }

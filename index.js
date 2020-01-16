@@ -69,9 +69,10 @@ class NewRegressions {
     this.interactive = this.argv.interactive || this.argv.i;
     this.debase64 = this.argv.debase64;
     this.format = this.argv.format;
-    if ((this.debase64 || this.format) && process.platform === 'win32') {
+    this.to_eof = this.argv['to-eof'];
+    if ((this.debase64 || this.format || this.to_eof) && process.platform === 'win32') {
       // since r2r on Windows modifies tests on-the-fly...
-      console.log('Do not run --debase64 or --format on Windows!');
+      console.log('Do not run --debase64, --format or --to-eof on Windows!');
       process.exit(1);
     }
     this.promises = [];
@@ -564,6 +565,38 @@ class NewRegressions {
       }
       if (this.argv.grep !== undefined) {
         return cb(null, {});
+      }
+      if (this.argv['to-eof']) {
+        let newTests = [];
+        let writeTests = false;
+        let re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*<<(\w+)$/;
+        process.stdout.write('Checking for <<KEYWORD in ' + fileName + '...');
+        for (let i = 0; i < tests.length; i++) {
+          let line = tests[i].trim();
+          let found = line.match(re);
+          if (found && found[2] !== 'EOF') {
+            writeTests = true;
+            let from_kw = found[1];
+            let to_kw = found[2];
+            newTests.push(from_kw + '=<<EOF');
+            i++;
+            while (!tests[i].trimStart().startsWith(to_kw)) {
+              newTests.push(tests[i]);
+              i++;
+            }
+            newTests.push('EOF');
+            i--;
+          } else {
+            newTests.push(tests[i]);
+          }
+        }
+        if (writeTests) {
+          fs.writeFileSync(pathName, newTests.join('\n'));
+          console.log('EOF\'D');
+        } else {
+          console.log('OK');
+        }
+        return cb(null, {});  // TODO: allow fallthrough?
       }
       if (this.argv.debase64) {
         let newTests = [];
