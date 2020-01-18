@@ -569,15 +569,14 @@ class NewRegressions {
       if (this.argv['to-eof']) {
         let newTests = [];
         let writeTests = false;
-        let re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*<<(\w+)$/;
-        process.stdout.write('Checking for <<KEYWORD in ' + fileName + '...');
+        let run_re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*<<(\w+)$/;
+        process.stdout.write('Checking for <<KEYWORD and \'..\' in ' + fileName + '...');
         for (let i = 0; i < tests.length; i++) {
-          let line = tests[i].trim();
-          let found = line.match(re);
-          if (found && found[2] !== 'EOF') {
+          let run_found = tests[i].trim().match(run_re);
+          if (run_found && run_found[2] !== 'EOF') {
             writeTests = true;
-            let from_kw = found[1];
-            let to_kw = found[2];
+            let from_kw = run_found[1];
+            let to_kw = run_found[2];
             newTests.push(from_kw + '=<<EOF');
             i++;
             while (!tests[i].trimStart().startsWith(to_kw)) {
@@ -587,7 +586,37 @@ class NewRegressions {
             newTests.push('EOF');
             i--;
           } else {
-            newTests.push(tests[i]);
+            let quote_re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*'([^']*)(')?.*$/;
+            let end_quote_re = /^([^']*)'.*$/;
+            let quote_found = tests[i].trimStart().match(quote_re);
+            if (quote_found) {
+              writeTests = true;
+              let kw = quote_found[1];
+              let body = quote_found[2];
+              let end_quote = quote_found[3];
+              newTests.push(kw + '=<<EOF');
+              if (end_quote === '\'') {
+                if (body !== '') {
+                  newTests.push(body);
+                }
+              } else {
+                newTests.push(body);
+                i++;
+                let end_quote_found = tests[i].match(end_quote_re);
+                while (!end_quote_found) {
+                  newTests.push(tests[i]);
+                  i++;
+                  end_quote_found = tests[i].match(end_quote_re);
+                }
+                let end_body = end_quote_found[1];
+                if (end_body !== '') {
+                  newTests.push(end_body);
+                }
+              }
+              newTests.push('EOF');
+            } else {
+              newTests.push(tests[i]);
+            }
           }
         }
         if (writeTests) {
