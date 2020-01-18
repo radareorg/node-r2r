@@ -970,7 +970,7 @@ function parseTestAsm (source, line) {
 }
 
 function removeEndNewline (str) {
-  return (str[str.length - 1] === '\n') ? str.slice(0, -1) : str;
+  return str.endsWith('\n') ? str.slice(0, -1) : str;
 }
 
 function debase64 (msg) {
