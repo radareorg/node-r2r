@@ -69,9 +69,10 @@ class NewRegressions {
     this.interactive = this.argv.interactive || this.argv.i;
     this.debase64 = this.argv.debase64;
     this.format = this.argv.format;
-    if ((this.debase64 || this.format) && process.platform === 'win32') {
+    this.to_eof = this.argv['to-eof'];
+    if ((this.debase64 || this.format || this.to_eof) && process.platform === 'win32') {
       // since r2r on Windows modifies tests on-the-fly...
-      console.log('Do not run --debase64 or --format on Windows!');
+      console.log('Do not run --debase64, --format or --to-eof on Windows!');
       process.exit(1);
     }
     this.promises = [];
@@ -564,6 +565,67 @@ class NewRegressions {
       }
       if (this.argv.grep !== undefined) {
         return cb(null, {});
+      }
+      if (this.argv['to-eof']) {
+        let newTests = [];
+        let writeTests = false;
+        let run_re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*<<(\w+)$/;
+        process.stdout.write('Checking for <<KEYWORD and \'..\' in ' + fileName + '...');
+        for (let i = 0; i < tests.length; i++) {
+          let run_found = tests[i].trim().match(run_re);
+          if (run_found && run_found[2] !== 'EOF') {
+            writeTests = true;
+            let from_kw = run_found[1];
+            let to_kw = run_found[2];
+            newTests.push(from_kw + '=<<EOF');
+            i++;
+            while (!tests[i].trimStart().startsWith(to_kw)) {
+              newTests.push(tests[i]);
+              i++;
+            }
+            newTests.push('EOF');
+            i--;
+          } else {
+            let quote_re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*'([^']*)(')?.*$/;
+            let end_quote_re = /^([^']*)'.*$/;
+            let quote_found = tests[i].trimStart().match(quote_re);
+            if (quote_found) {
+              writeTests = true;
+              let kw = quote_found[1];
+              let body = quote_found[2];
+              let end_quote = quote_found[3];
+              newTests.push(kw + '=<<EOF');
+              if (end_quote === '\'') {
+                if (body !== '') {
+                  newTests.push(body);
+                }
+              } else {
+                newTests.push(body);
+                i++;
+                let end_quote_found = tests[i].match(end_quote_re);
+                while (!end_quote_found) {
+                  newTests.push(tests[i]);
+                  i++;
+                  end_quote_found = tests[i].match(end_quote_re);
+                }
+                let end_body = end_quote_found[1];
+                if (end_body !== '') {
+                  newTests.push(end_body);
+                }
+              }
+              newTests.push('EOF');
+            } else {
+              newTests.push(tests[i]);
+            }
+          }
+        }
+        if (writeTests) {
+          fs.writeFileSync(pathName, newTests.join('\n'));
+          console.log('EOF\'D');
+        } else {
+          console.log('OK');
+        }
+        return cb(null, {});  // TODO: allow fallthrough?
       }
       if (this.argv.debase64) {
         let newTests = [];
