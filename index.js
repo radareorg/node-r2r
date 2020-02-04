@@ -743,13 +743,21 @@ class NewRegressions {
     /* Check test output, if it's the same, the test passes */
     if (test.check === undefined) {
       if (test.expect !== undefined) {
+        test.expect = removeEndNewline(test.expect);
+        test.stdout = removeEndNewline(test.stdout);
         test.stdoutFail = (test.expect64 || test.expect64 === undefined)
           ? test.expect.trim() !== test.stdout.trim()
           : test.expect !== test.stdout;
       } else {
         test.stdoutFail = false;
       }
-      test.stderrFail = test.expectErr !== undefined ? test.expectErr !== test.stderr : false;
+      if (test.expectErr !== undefined) {
+        test.expectErr = removeEndNewline(test.expectErr);
+        test.stderr = removeEndNewline(test.stderr);
+        test.stderrFail = test.expectErr !== test.stderr;
+      } else {
+        test.stderrFail = false;
+      }
       test.passes = !test.stdoutFail && !test.stderrFail;
     } else {
       test.check(test);
@@ -1021,6 +1029,10 @@ function parseTestAsm (source, line) {
     }
   }
   return tests;
+}
+
+function removeEndNewline (str) {
+  return str.endsWith('\n') ? str.slice(0, -1) : str;
 }
 
 function debase64 (msg) {
