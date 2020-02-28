@@ -37,7 +37,7 @@
     "minimist": "^1.2.0",
     "njstrace": "^1.2.0",
     "promise-limit": "^2.6.0",
-    "r2pipe-promise": "1.5.1",
+    "r2pipe-promise": "1.6.0",
     "rc": "^1.2.8",
     "tmp": "*",
     "walk": "^2.3.13"
@@ -57,5 +57,5 @@
     "fix": "semistandard --fix",
     "test": "semistandard"
   },
-  "version": "0.3.0"
+  "version": "0.3.1"
 }
