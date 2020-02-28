@@ -412,8 +412,7 @@ function fixTest (test, next) {
               output += 'EOF\n';
             }
           } else {
-            const delim = common.getSuitableDelim(test.stdout);
-            output += 'EXPECT=' + delim + test.stdout + delim + '\n';
+            output += 'EXPECT=<<EOF\n' + delim + test.stdout + delim + '\nEOF\n';
           }
         } else if (line.startsWith('EXPECT_ERR=')) {
           if ((test.stderr.match(/\n/g) || []).length > 1) {
@@ -448,8 +447,7 @@ function fixTest (test, next) {
                 output += 'EOF\n';
               }
             } else {
-              const delim = common.getSuitableDelim(test.stderr);
-              output += 'EXPECT_ERR=' + delim + test.stderr + delim + '\n';
+              output += 'EXPECT_ERR=<<EOF\n' + test.stderr + '\nEOF\n';
             }
           } else {
             output += 'EXPECT_ERR=' + test.stderr + (test.stderr.length === 0 ? '\n' : '');
