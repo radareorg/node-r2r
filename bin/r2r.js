@@ -412,7 +412,7 @@ function fixTest (test, next) {
               output += 'EOF\n';
             }
           } else {
-            output += 'EXPECT=<<EOF\n' + delim + test.stdout + delim + '\nEOF\n';
+            output += 'EXPECT=<<EOF\n' + test.stdout + '\nEOF\n';
           }
         } else if (line.startsWith('EXPECT_ERR=')) {
           if ((test.stderr.match(/\n/g) || []).length > 1) {

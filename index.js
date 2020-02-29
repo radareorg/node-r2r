@@ -644,7 +644,7 @@ class NewRegressions {
             line = debase64(line.substring(9)).replace(/\n+$/, '');
             if (line.startsWith('[') && line.endsWith(']') ||
                 line.startsWith('{') && line.endsWith('}')) { // JSON
-              newTests.push('EXPECT=<<EOF\n' + delim + line + '\nEOF\n');
+              newTests.push('EXPECT=<<EOF\n' + line + '\nEOF\n');
             } else {
               newTests.push('EXPECT=<<EOF');
               if (line !== '') {
