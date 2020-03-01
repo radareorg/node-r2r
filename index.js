@@ -586,22 +586,36 @@ class NewRegressions {
             newTests.push('EOF');
             i--;
           } else {
-            let quote_re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*'([^']*)(')?.*$/;
-            let end_quote_re = /^([^']*)'.*$/;
-            let quote_found = tests[i].trimStart().match(quote_re);
-            if (quote_found) {
+            let single_quote_re = /^(CMDS|EXPECT|EXPECT_ERR)=\s*(')([^']*)(')?.*$/;
+            let double_quote_re = /^(EXPECT|EXPECT_ERR)=\s*(")([^"]*)(")?.*$/;
+            let percent_quote_re = /^(EXPECT|EXPECT_ERR)=\s*(%)([^%]*)(%)?.*$/;
+            let single_end_quote_re = /^([^']*)'.*$/;
+            let double_end_quote_re = /^([^"]*)".*$/;
+            let percent_end_quote_re = /^([^%]*)%.*$/;
+            let line_trimmed = tests[i].trimStart();
+            let single_quote_found = line_trimmed.match(single_quote_re);
+            let double_quote_found = line_trimmed.match(double_quote_re);
+            let percent_quote_found = line_trimmed.match(percent_quote_re);
+            if (single_quote_found || double_quote_found || percent_quote_found) {
               writeTests = true;
+              let quote_found =
+                  single_quote_found ? single_quote_found :
+                  (double_quote_found ? double_quote_found : percent_quote_found);
               let kw = quote_found[1];
-              let body = quote_found[2];
-              let end_quote = quote_found[3];
+              let begin_quote = quote_found[2];
+              let body = quote_found[3];
+              let end_quote_single = quote_found[4];
               newTests.push(kw + '=<<EOF');
-              if (end_quote === '\'') {
+              if (end_quote_single === begin_quote) {
                 if (body !== '') {
                   newTests.push(body);
                 }
               } else {
                 newTests.push(body);
                 i++;
+                let end_quote_re =
+                    single_quote_found ? single_end_quote_re :
+                    (double_quote_found ? double_end_quote_re : percent_end_quote_re);
                 let end_quote_found = tests[i].match(end_quote_re);
                 while (!end_quote_found) {
                   newTests.push(tests[i]);
