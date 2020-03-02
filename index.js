@@ -295,7 +295,6 @@ class NewRegressions {
       editMode.name = 'cmd_graph';
       process.exit(1);
     }
-    const delims = /['"%]/;
     for (let i = 0; i < lines.length; i++) {
       let l = lines[i];
       const line = l.trim();
@@ -378,24 +377,7 @@ class NewRegressions {
               i--;
             }
           } else {
-            const delim = vt.charAt(0);
-            if (delims.test(delim)) {
-              const startDelim = v.indexOf(delim);
-              let endDelim = v.indexOf(delim, startDelim + 1);
-              if (endDelim === -1) {
-                test.cmdScript = v.substring(startDelim + 1) + '\n';
-                i++;
-                while ((endDelim = lines[i].indexOf(delim)) === -1) {
-                  test.cmdScript += lines[i] + '\n';
-                  i++;
-                }
-                test.cmdScript += lines[i].substring(0, endDelim);
-              } else {
-                test.cmdScript = v.substring(startDelim + 1, endDelim) + '\n';
-              }
-            } else {
-              test.cmdScript = v ? v + '\n' : v;
-            }
+            test.cmdScript = v ? v + '\n' : v;
           }
           test.cmds = test.cmdScript ? test.cmdScript.trim().split('\n') : [];
           break;
@@ -432,25 +414,7 @@ class NewRegressions {
               i--;
             }
           } else {
-            const delim = vt.charAt(0);
-            if (delims.test(delim)) {
-              test.expectDelim = delim;
-              const startDelim = v.indexOf(delim);
-              let endDelim = v.indexOf(delim, startDelim + 1);
-              if (endDelim === -1) {
-                test.expect = v.substring(startDelim + 1) + '\n';
-                i++;
-                while ((endDelim = lines[i].indexOf(delim)) === -1) {
-                  test.expect += lines[i] + '\n';
-                  i++;
-                }
-                test.expect += lines[i].substring(0, endDelim);
-              } else {
-                test.expect = v.substring(startDelim + 1, endDelim); // No newline added
-              }
-            } else {
-              test.expect = v + '\n';
-            }
+            test.expect = v + '\n';
           }
           break;
           /*
@@ -476,25 +440,7 @@ class NewRegressions {
               i--;
             }
           } else {
-            const delim = vt.charAt(0);
-            if (delims.test(delim)) {
-              test.expectErrDelim = delim;
-              const startDelim = v.indexOf(delim);
-              let endDelim = v.indexOf(delim, startDelim + 1);
-              if (endDelim === -1) {
-                test.expectErr = v.substring(startDelim + 1) + '\n';
-                i++;
-                while ((endDelim = lines[i].indexOf(delim)) === -1) {
-                  test.expectErr += lines[i] + '\n';
-                  i++;
-                }
-                test.expectErr += lines[i].substring(0, endDelim);
-              } else {
-                test.expectErr = v.substring(startDelim + 1, endDelim); // No newline added
-              }
-            } else {
-              test.expectErr = v + (v.length === 0 ? '' : '\n');
-            }
+            test.expectErr = v + (v.length === 0 ? '' : '\n');
           }
           break;
           /*
