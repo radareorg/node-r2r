@@ -806,12 +806,8 @@ class NewRegressions {
         if (test.expect64) {
           console.log('EXPECT64=' + base64(test.stdout));
         } else if (test.expect64 !== undefined) {
-          if (test.expectEndString !== undefined && test.stdout.endsWith('\n')) {
-            common.highlightTrailingWs(null, '\nEXPECT=<<' + test.expectEndString + '\n' + test.stdout);
-          } else {
-            test.expectDelim = common.getSuitableDelim(test.stdout);
-            common.highlightTrailingWs(null, '\nEXPECT=' + test.expectDelim + test.stdout + test.expectDelim + '\n');
-          }
+          common.highlightTrailingWs(null, '\nEXPECT=<<EOF\n' + test.stdout +
+                                     (test.stdout === '' || test.stdout.endsWith('\n') ? '' : '\n') + 'EOF\n');
         }
       }
       if (test.fuzz === undefined) {
@@ -819,14 +815,9 @@ class NewRegressions {
           console.log();
         }
         if (test.stderrFail) {
-          if ((test.stderr.match(/\n/g) || []).length > 1) {
-            if (test.expectErrEndString !== undefined && test.stderr.endsWith('\n')) {
-              common.highlightTrailingWs(null, 'EXPECT_ERR=<<' + test.expectErrEndString + '\n' + test.stderr);
-            } else {
-              test.expectErrDelim = common.getSuitableDelim(test.stderr);
-              common.highlightTrailingWs(null, 'EXPECT_ERR=' + test.expectErrDelim + test.stderr +
-                                         test.expectErrDelim + '\n');
-            }
+          if (test.stderr === '' || (test.stderr.match(/\n/g) || []).length > 1) {
+            common.highlightTrailingWs(null, '\nEXPECT_ERR=<<EOF\n' + test.stderr +
+                                       (test.stderr === '' || test.stderr.endsWith('\n') ? '' : '\n') + 'EOF\n');
           } else {
             common.highlightTrailingWs(null, 'EXPECT_ERR=' + test.stderr);
           }
