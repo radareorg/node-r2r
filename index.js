@@ -344,8 +344,8 @@ class NewRegressions {
       const eq = l.indexOf('=');
 
       if (eq === -1) {
-        console.error('Action' + l + ' seems invalid (' + source + ')');
-        throw new Error('Invalid action: ' + l);
+        let front = l === 'EOF' ? 'Unexpected \'EOF\'' : 'Unknown keyword \'' + l + '\'';
+        throw new Error(front + ' at line ' + (i + 1) + ' of ' + source);
       }
 
       const k = l.substring(0, eq);
