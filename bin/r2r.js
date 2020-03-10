@@ -412,45 +412,43 @@ function fixTest (test, next) {
               output += 'EOF\n';
             }
           } else {
-            output += 'EXPECT=<<EOF\n' + test.stdout + '\nEOF\n';
+            output += 'EXPECT=<<EOF\n' + test.stdout +
+              (test.stdout === '' || test.stdout.endsWith('\n') ? '' : '\n') + 'EOF\n';
           }
         } else if (line.startsWith('EXPECT_ERR=')) {
-          if ((test.stderr.match(/\n/g) || []).length > 1) {
-            const val = line.substring(11);
-            const valTrim = val.trim();
-            let endString = null;
-            if (valTrim.startsWith('<<')) {
-              endString = valTrim.substring(2);
+          const val = line.substring(11);
+          const valTrim = val.trim();
+          let endString = null;
+          if (valTrim.startsWith('<<')) {
+            endString = valTrim.substring(2);
+            i++;
+            while (!lines[i].startsWith(endString)) {
               i++;
-              while (!lines[i].startsWith(endString)) {
+            }
+            if (endString !== 'EOF') {
+              i--;
+            }
+          } else {
+            const delim = valTrim.charAt(0);
+            if (delims.test(delim)) {
+              const startDelim = val.indexOf(delim);
+              const endDelim = val.indexOf(delim, startDelim + 1);
+              if (endDelim === -1) {
                 i++;
-              }
-              if (endString !== 'EOF') {
-                i--;
-              }
-            } else {
-              const delim = valTrim.charAt(0);
-              if (delims.test(delim)) {
-                const startDelim = val.indexOf(delim);
-                const endDelim = val.indexOf(delim, startDelim + 1);
-                if (endDelim === -1) {
+                while (lines[i].indexOf(delim) === -1) {
                   i++;
-                  while (lines[i].indexOf(delim) === -1) {
-                    i++;
-                  }
                 }
               }
             }
-            if (test.stderr.endsWith('\n') && endString !== null) {
-              output += 'EXPECT_ERR=<<' + endString + '\n' + test.stderr;
-              if (endString === 'EOF') {
-                output += 'EOF\n';
-              }
-            } else {
-              output += 'EXPECT_ERR=<<EOF\n' + test.stderr + '\nEOF\n';
+          }
+          if (test.stderr.endsWith('\n') && endString !== null) {
+            output += 'EXPECT_ERR=<<' + endString + '\n' + test.stderr;
+            if (endString === 'EOF') {
+              output += 'EOF\n';
             }
           } else {
-            output += 'EXPECT_ERR=' + test.stderr + (test.stderr.length === 0 ? '\n' : '');
+            output += 'EXPECT_ERR=<<EOF\n' + test.stderr +
+              (test.stderr === '' || test.stderr.endsWith('\n') ? '' : '\n') + 'EOF\n';
           }
         } else {
           output += line + '\n';
