@@ -344,8 +344,8 @@ class NewRegressions {
       const eq = l.indexOf('=');
 
       if (eq === -1) {
-        let front = l === 'EOF' ? 'Unexpected \'EOF\'' : 'Unknown keyword \'' + l + '\'';
-        throw new Error(front + ' at line ' + (i + 1) + ' of ' + source);
+        let msg = l === 'EOF' ? 'Unexpected "EOF"' : 'Unknown keyword "' + l + '"';
+        this.throwError(msg, i, source);
       }
 
       const k = l.substring(0, eq);
@@ -367,6 +367,9 @@ class NewRegressions {
         case 'CMDS':
           if (vt.startsWith('<<')) {
             const endString = vt.substring(2);
+            if (endString !== 'EOF') {
+              this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
+            }
             test.cmdScript = '';
             i++;
             while (!lines[i].startsWith(endString)) {
@@ -400,6 +403,9 @@ class NewRegressions {
           test.expect64 = false;
           if (vt.startsWith('<<')) {
             const endString = vt.substring(2);
+            if (endString !== 'EOF') {
+              this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
+            }
             test.expectEndString = endString;
             test.expect = '';
             i++;
@@ -426,6 +432,9 @@ class NewRegressions {
         case 'EXPECT_ERR':
           if (vt.startsWith('<<')) {
             const endString = vt.substring(2);
+            if (endString !== 'EOF') {
+              this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
+            }
             test.expectErrEndString = endString;
             test.expectErr = '';
             i++;
@@ -848,6 +857,10 @@ class NewRegressions {
     if ((process.env.NOOK && (r.XX || r.FX)) || !process.env.NOOK) {
       console.log('[**]', name + '  ', 'OK', n(r.OK), 'BR', n(r.BR), 'XX', n(r.XX), 'FX', n(r.FX));
     }
+  }
+
+  throwError (msg, i, src) {
+    throw new Error(msg + ' at line ' + (i + 1) + ' of ' + src);
   }
 
   fixTest (name, expect, cb) {
