@@ -344,7 +344,7 @@ class NewRegressions {
       const eq = l.indexOf('=');
 
       if (eq === -1) {
-        let msg = l === 'EOF' ? 'Unexpected "EOF"' : 'Unknown keyword "' + l + '"';
+        const msg = l === 'EOF' ? 'Unexpected "EOF"' : 'Unknown keyword "' + l + '"';
         this.throwError(msg, i, source);
       }
 
