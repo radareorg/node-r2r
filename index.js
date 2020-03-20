@@ -456,11 +456,15 @@ class NewRegressions {
           test.oneStream = true;
           break;
         default:
+          if (!k.startsWith('$')) {
+            this.throwError('Unknown keyword "' + k + '"', i, source);
+          }
+          const env_k = k.substring(1);
           if (test.customEnv === undefined) {
             test.customEnv = {};
           }
-          if (process.env[k] === undefined) {
-            test.customEnv[k] = v;
+          if (process.env[env_k] === undefined) {
+            test.customEnv[env_k] = v;
           }
           break;
       }
