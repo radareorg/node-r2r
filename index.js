@@ -370,11 +370,16 @@ class NewRegressions {
             if (endString !== 'EOF') {
               this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
             }
+            let start_i = i;
             test.cmdScript = '';
             i++;
-            while (!lines[i].startsWith(endString)) {
+            while (lines[i] !== undefined && !lines[i].startsWith(endString)) {
               test.cmdScript += lines[i] + '\n';
               i++;
+            }
+            if (lines[i] === undefined) {
+              throw new Error('Unexpected end-of-file in CMDS -- did you forget a ' + endString +
+                              ' for line ' + (start_i + 1) + ' at ' + source + '?');
             }
             if (endString !== 'EOF') {
               i--;
@@ -400,6 +405,7 @@ class NewRegressions {
             if (endString !== 'EOF') {
               this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
             }
+            let start_i = i;
             test.expectEndString = endString;
             test.expect = '';
             i++;
@@ -408,7 +414,8 @@ class NewRegressions {
               i++;
             }
             if (lines[i] === undefined) {
-              throw new Error('Unexpected EOF in EXPECT -- did you forget a ' + endString + '?');
+              throw new Error('Unexpected end-of-file in EXPECT -- did you forget a ' + endString +
+                              ' for line ' + (start_i + 1) + ' at ' + source + '?');
             }
             if (endString !== 'EOF') {
               i--;
@@ -423,6 +430,7 @@ class NewRegressions {
             if (endString !== 'EOF') {
               this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
             }
+            let start_i = i;
             test.expectErrEndString = endString;
             test.expectErr = '';
             i++;
@@ -431,7 +439,8 @@ class NewRegressions {
               i++;
             }
             if (lines[i] === undefined) {
-              throw new Error('Unexpected EOF in EXPECT_ERR -- did you forget a ' + endString + '?');
+              throw new Error('Unexpected end-of-file in EXPECT_ERR -- did you forget a ' + endString +
+                              ' for line ' + (start_i + 1) + ' at ' + source + '?');
             }
             if (endString !== 'EOF') {
               i--;
