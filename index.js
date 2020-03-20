@@ -884,17 +884,15 @@ function createTemporaryFile () {
 function parseTestJson (source, line) {
   const bins = ['../bins/elf/crackme0x00b', '../bins/pe/version_std.exe', '../bins/elf/bomb', '../bins/mach0/hello-objc'];
   let t = {from: source, broken: false};
-  let tmp = line.split(' ');
 
-  t.name = line.split('BROKEN')[0].trim();
-  if (tmp[tmp.length - 1] === 'BROKEN') {
-    tmp = tmp.slice(0, tmp.length - 1);
-    t.cmd = tmp.join(' ');
+  if (line.endsWith(' BROKEN')) {
+    t.cmd = line.substring(0, line.length - ' BROKEN'.length).trim();
     t.broken = true;
   } else {
     t.cmd = line;
     t.broken = false;
   }
+  t.name = t.cmd;
   t.check = function (test) {
     try {
       if (test.stdout === '') {
