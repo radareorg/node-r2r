@@ -354,7 +354,7 @@ class NewRegressions {
       switch (k) {
         case 'NAME':
           if (vt.length > 1 && vt.startsWith("'") && vt.endsWith("'")) {
-            this.throwError('Don\'t single-quote test name', i, source);
+            this.throwError('Don\'t quote test name', i, source);
           }
           test.name = v;
           if (editMode.enabled && editMode.name === v) {
