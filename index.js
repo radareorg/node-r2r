@@ -219,8 +219,28 @@ class NewRegressions {
           if (!test.file) {
             test.file = '-';
           }
-          // Append testfile
-          args.push(...test.file.split(' '));
+          // Process any quotes surrounding test binary filename(s)
+          let files = test.file.split(' ');
+          for (let i = files.length - 1; i >= 0; i--) {
+            let file = files[i];
+            if (i > 0) {
+              if (file.length > 0 && (file.endsWith('"') || file.endsWith("'"))) {
+                let quoteChar = file[file.length - 1];
+                if (file.length === 1 || !file.startsWith(quoteChar)) {
+                  files[i - 1] += ' ' + file;
+                  files.splice(i, 1);
+                  continue;
+                }
+              }
+            }
+            if (file.length > 1 &&
+                ((file.startsWith('"') && file.endsWith('"')) ||
+                 (file.startsWith("'") && file.endsWith("'")))) {
+              files[i] = file.substring(1, file.length - 1);
+            }
+          }
+          // Append test binary filename(s)
+          args.push(...files);
           if (test.oneStream) {
             args.unshift('-escr.onestream=1');
             args.push('2>&1');
