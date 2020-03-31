@@ -217,30 +217,10 @@ class NewRegressions {
             args.push('-c', test.cmds.join(';'));
           }
           if (!test.file) {
-            test.file = '-';
-          }
-          // Process any quotes surrounding test binary filename(s)
-          let files = test.file.split(' ');
-          for (let i = files.length - 1; i >= 0; i--) {
-            let file = files[i];
-            if (i > 0) {
-              if (file.length > 0 && (file.endsWith('"') || file.endsWith("'"))) {
-                let quoteChar = file[file.length - 1];
-                if (file.length === 1 || !file.startsWith(quoteChar)) {
-                  files[i - 1] += ' ' + file;
-                  files.splice(i, 1);
-                  continue;
-                }
-              }
-            }
-            if (file.length > 1 &&
-                ((file.startsWith('"') && file.endsWith('"')) ||
-                 (file.startsWith("'") && file.endsWith("'")))) {
-              files[i] = file.substring(1, file.length - 1);
-            }
+            test.file = ['-'];
           }
           // Append test binary filename(s)
-          args.push(...files);
+          args.push(...test.file);
           if (test.oneStream) {
             args.unshift('-escr.onestream=1');
             args.push('2>&1');
@@ -473,7 +453,28 @@ class NewRegressions {
           }
           break;
         case 'FILE':
-          test.file = v;
+          if (vt.startsWith('<<')) {
+            const endString = vt.substring(2);
+            if (endString !== 'EOF') {
+              this.throwError('End token must be "EOF", got "' + endString + '" instead', i, source);
+            }
+            let start_i = i;
+            test.file = [];
+            i++;
+            while (lines[i] !== undefined && !lines[i].startsWith(endString)) {
+              test.file.push(lines[i]);
+              i++;
+            }
+            if (lines[i] === undefined) {
+              throw new Error('Unexpected end-of-file in FILE -- did you forget a ' + endString +
+                              ' for line ' + (start_i + 1) + ' at ' + source + '?');
+            }
+            if (endString !== 'EOF') {
+              i--;
+            }
+          } else {
+            test.file = [v === '' ? '-' : v];
+          }
           break;
         case 'ONE_STREAM':
           test.oneStream = true;
